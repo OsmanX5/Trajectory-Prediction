@@ -9,6 +9,8 @@ public class TrajectoryPrediction : MonoBehaviour
     public float ShootingAngle = 30f;
     public float speed= 10f;
     public bool MakeTile = true;
+    public Material TrailMat;
+    public Vector3 NeededVelocity;
     private void Start()
     {
         //  CalculateSpeed(Ball.position, target.position, ShootingAngle);
@@ -16,10 +18,6 @@ public class TrajectoryPrediction : MonoBehaviour
     }
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            Shoot();
-        }
     }
     public void Shoot()
     {
@@ -62,5 +60,25 @@ public class TrajectoryPrediction : MonoBehaviour
     {
         Ball.gameObject.AddComponent<TrailRenderer>();
         Ball.GetComponent<TrailRenderer>().startWidth = 0.1f;
+        Ball.GetComponent<TrailRenderer>().material = TrailMat;
+    }
+    public void OnClickPridection()
+    {
+        StartCoroutine(prediction());
+    }
+    public IEnumerator prediction()
+    {
+        Ball.GetComponent<Collider>().enabled = false;
+        Transform Original = Ball;
+        GameObject ghost = Instantiate(Ball.gameObject, Ball.position, Ball.rotation);
+        this.Ball = ghost.transform;
+        addTail();
+        Ball.GetComponent<Collider>().enabled = true;
+        Ball.GetComponent<MeshRenderer>().enabled = false;
+        NeededVelocity = CalculateSpeed(Ball.position, target.position, ShootingAngle);
+        Shoot();
+        this.Ball = Original;
+        yield return new WaitForSeconds(0.1f);
+        Ball.GetComponent<Collider>().enabled = true;
     }
 }
