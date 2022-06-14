@@ -8,6 +8,7 @@ public class TrajectoryPrediction : MonoBehaviour
     public Transform Ball;
     public float ShootingAngle = 30f;
     public float speed= 10f;
+    public bool MakeTile = true;
     private void Start()
     {
         //  CalculateSpeed(Ball.position, target.position, ShootingAngle);
@@ -22,6 +23,7 @@ public class TrajectoryPrediction : MonoBehaviour
     }
     public void Shoot()
     {
+        if (MakeTile)addTail();
         Rigidbody rb = Ball.GetComponent<Rigidbody>();
         rb.useGravity = true;
         rb.velocity = CalculateSpeed(Ball.position, target.position, ShootingAngle) ;
@@ -56,4 +58,9 @@ public class TrajectoryPrediction : MonoBehaviour
         return velocity;
     }
 
+    void addTail()
+    {
+        Ball.gameObject.AddComponent<TrailRenderer>();
+        Ball.GetComponent<TrailRenderer>().startWidth = 0.1f;
+    }
 }
