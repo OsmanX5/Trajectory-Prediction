@@ -13,9 +13,9 @@ public class DemoScene : MonoBehaviour
     void Update()
     {
         Temp = predector.NeededForce;
-        NeededForce_txt.text = $"Needed Force = X:{Temp.x} , Y:{Temp.y} , Z:{Temp.z}";
+        NeededForce_txt.text = $"Needed Force \n X:{Temp.x} , Y:{Temp.y} , Z:{Temp.z}";
 
         Temp = predector.NeededVelocity;
-        NeededForce_txt.text = $"Needed Velocity = X:{Temp.x} , Y:{Temp.y} , Z:{Temp.z}";
+        NeededVelocity_txt.text = $"Needed Velocity \n X:{Temp.x} , Y:{Temp.y} , Z:{Temp.z}";
     }
 }

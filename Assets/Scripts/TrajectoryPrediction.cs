@@ -82,6 +82,7 @@ public class TrajectoryPrediction : MonoBehaviour
     }
     public IEnumerator prediction()
     {
+        CalculateForce();
         Ball.GetComponent<Collider>().enabled = false;
         Transform Original = Ball;
         GameObject ghost = Instantiate(Ball.gameObject, Ball.position, Ball.rotation);
