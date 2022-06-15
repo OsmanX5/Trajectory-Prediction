@@ -1,9 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 public class TrajectoryPrediction : MonoBehaviour
 {
+    
     public Transform target;
     public Transform Ball;
     public float ShootingAngle = 30f;
@@ -11,12 +11,24 @@ public class TrajectoryPrediction : MonoBehaviour
     public bool MakeTile = true;
     public Material TrailMat;
     public Vector3 NeededVelocity;
+    public Vector3 NeededForce;
     private void Start()
     {
         //  CalculateSpeed(Ball.position, target.position, ShootingAngle);
         //CalculateSpeed(Ball.position, target.position, 60);
     }
-    private void Update()
+    Vector3 CalculateForce()
+    {
+        Rigidbody rb = Ball.GetComponent<Rigidbody>();
+        Vector3 Force = new Vector3();
+        Vector3 Velocity =CalculateSpeed(Ball.position, target.position, ShootingAngle);
+        Vector3 acceleration = (Velocity - rb.velocity) / Time.fixedDeltaTime;
+        Force = acceleration * rb.mass;
+        NeededForce = Force;
+        return Force;
+
+    }
+    private void FixedUpdate()
     {
     }
     public void Shoot()
@@ -24,7 +36,8 @@ public class TrajectoryPrediction : MonoBehaviour
         if (MakeTile)addTail();
         Rigidbody rb = Ball.GetComponent<Rigidbody>();
         rb.useGravity = true;
-        rb.velocity = CalculateSpeed(Ball.position, target.position, ShootingAngle) ;
+        //  rb.velocity = CalculateSpeed(Ball.position, target.position, ShootingAngle) ;
+        rb.AddForce(CalculateForce());
     }
     public Vector3 CalculateSpeed(Vector3 shooter,Vector3 target,float angle)
     {
@@ -53,6 +66,7 @@ public class TrajectoryPrediction : MonoBehaviour
         Debug.Log(u);
         Debug.Log(uy);
         Vector3 velocity = new Vector3(ux,uy,uz);
+        NeededVelocity = velocity;
         return velocity;
     }
 
