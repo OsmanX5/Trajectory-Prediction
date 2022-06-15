@@ -7,11 +7,12 @@ public class TrajectoryPrediction : MonoBehaviour
     public Transform target;
     public Transform Ball;
     public float ShootingAngle = 30f;
-    public float speed= 10f;
     public bool MakeTile = true;
     public Material TrailMat;
     public Vector3 NeededVelocity;
     public Vector3 NeededForce;
+    public float TimeToReach =0;
+    public float speedMultiplaction =1 ;
     private void Start()
     {
         //  CalculateSpeed(Ball.position, target.position, ShootingAngle);
@@ -19,6 +20,7 @@ public class TrajectoryPrediction : MonoBehaviour
     }
     Vector3 CalculateForce()
     {
+        //f = m *a 
         Rigidbody rb = Ball.GetComponent<Rigidbody>();
         Vector3 Force = new Vector3();
         Vector3 Velocity =CalculateSpeed(Ball.position, target.position, ShootingAngle);
@@ -30,14 +32,21 @@ public class TrajectoryPrediction : MonoBehaviour
     }
     private void FixedUpdate()
     {
+
     }
     public void Shoot()
     {
         if (MakeTile)addTail();
         Rigidbody rb = Ball.GetComponent<Rigidbody>();
         rb.useGravity = true;
-        //  rb.velocity = CalculateSpeed(Ball.position, target.position, ShootingAngle) ;
-        rb.AddForce(CalculateForce());
+        rb.AddForce(CalculateForce() * speedMultiplaction);
+    }
+    public void ShootWithVelocity()
+    {
+        if (MakeTile) addTail();
+        Rigidbody rb = Ball.GetComponent<Rigidbody>();
+        rb.useGravity = true;
+        rb.velocity = CalculateSpeed(Ball.position, target.position, ShootingAngle);
     }
     public Vector3 CalculateSpeed(Vector3 shooter,Vector3 target,float angle)
     {
@@ -53,11 +62,6 @@ public class TrajectoryPrediction : MonoBehaviour
         sina = Mathf.Sin(angle);
         y = dir.y;
         uxz = (g*x*x) / (2 * (tana *x - y) );
-      /*  Debug.Log("x = " + x);
-        Debug.Log("g = " + g);
-        Debug.Log("y = " + y);
-        Debug.Log("ux = " + ux);
-        Debug.Log(ux);*/
         uxz = Mathf.Sqrt(uxz);
         u = uxz / cosa;
         uy = u * sina;
@@ -67,9 +71,11 @@ public class TrajectoryPrediction : MonoBehaviour
         Debug.Log(uy);
         Vector3 velocity = new Vector3(ux,uy,uz);
         NeededVelocity = velocity;
+        TimeToReach = x / uxz;
         return velocity;
     }
 
+   
     void addTail()
     {
         Ball.gameObject.AddComponent<TrailRenderer>();
@@ -96,4 +102,6 @@ public class TrajectoryPrediction : MonoBehaviour
         yield return new WaitForSeconds(0.1f);
         Ball.GetComponent<Collider>().enabled = true;
     }
+    
+
 }
